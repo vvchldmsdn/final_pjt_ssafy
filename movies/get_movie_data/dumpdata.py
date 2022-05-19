@@ -8,7 +8,6 @@ s_idx = 1
 collection_dict = {
     '시리즈 없음': 0
 }
-
 production_countries_dict = dict()
 p_idx = 1
 
@@ -26,7 +25,7 @@ params = {
     "language": "ko-KR",
 }
 
-for page in range(1, 2):
+for page in range(2, 4):
     params_tmp = deepcopy(params)
     params_tmp["page"] = page
 
