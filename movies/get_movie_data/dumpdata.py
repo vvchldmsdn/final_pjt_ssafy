@@ -25,7 +25,7 @@ params = {
     "language": "ko-KR",
 }
 
-for page in range(2, 4):
+for page in range(1, 20):
     params_tmp = deepcopy(params)
     params_tmp["page"] = page
 
@@ -34,59 +34,60 @@ for page in range(2, 4):
 
     # 영화 하나 당 정보 찾기 시작 for 문
     for movie in data:
+        if movie['overview'] != '':
         # 영화 정보 하나 당 detail 페이지에서 spoken_language, production_countries, belongs_to_collections 정보 받아와야 함
-        movie_id = movie.get("id")
+            movie_id = movie.get("id")
 
-        detail_response = requests.get(
-            Base_URL + f"/movie/{movie_id}", params=params
-        ).json()
-        collection = detail_response.get("belongs_to_collection")  # 딕셔너리 형태
-        countries = detail_response.get("production_countries")  # 리스트 형태 / 각 요소는 딕셔너리
-        languages = detail_response.get("spoken_languages")  # 리스트 형태 / 각 요소는 딕셔너리
+            detail_response = requests.get(
+                Base_URL + f"/movie/{movie_id}", params=params
+            ).json()
+            collection = detail_response.get("belongs_to_collection")  # 딕셔너리 형태
+            countries = detail_response.get("production_countries")  # 리스트 형태 / 각 요소는 딕셔너리
+            languages = detail_response.get("spoken_languages")  # 리스트 형태 / 각 요소는 딕셔너리
 
-        # 내가 정해주는 pk(id)값 담을 배열
-        language_ids = []
-        countries_ids = []
-        collection_ids = 0
+            # 내가 정해주는 pk(id)값 담을 배열
+            language_ids = []
+            countries_ids = []
+            collection_ids = 0
 
-        # spoken_language id값 설정
-        for language in languages:
-            if language["english_name"] not in spoken_language_dict:
-                spoken_language_dict[language["english_name"]] = s_idx
-                language_ids.append(spoken_language_dict[language["english_name"]])
-                s_idx += 1
-            else:
-                language_ids.append(spoken_language_dict[language["english_name"]])
+            # spoken_language id값 설정
+            for language in languages:
+                if language["english_name"] not in spoken_language_dict:
+                    spoken_language_dict[language["english_name"]] = s_idx
+                    language_ids.append(spoken_language_dict[language["english_name"]])
+                    s_idx += 1
+                else:
+                    language_ids.append(spoken_language_dict[language["english_name"]])
 
-        # production_countries id값 설정
-        for country in countries:
-            if country["name"] not in production_countries_dict:
-                production_countries_dict[country["name"]] = p_idx
-                countries_ids.append(production_countries_dict[country["name"]])
-                p_idx += 1
-            else:
-                countries_ids.append(production_countries_dict[country["name"]])
+            # production_countries id값 설정
+            for country in countries:
+                if country["name"] not in production_countries_dict:
+                    production_countries_dict[country["name"]] = p_idx
+                    countries_ids.append(production_countries_dict[country["name"]])
+                    p_idx += 1
+                else:
+                    countries_ids.append(production_countries_dict[country["name"]])
 
-        # belongs_to_collection id 값 설정
-        if collection != None:
-            if collection["name"] not in collection_dict:
-                collection_dict[collection["name"]] = collection["id"]
-                collection_ids = collection.get("id")
+            # belongs_to_collection id 값 설정
+            if collection != None:
+                if collection["name"] not in collection_dict:
+                    collection_dict[collection["name"]] = collection["id"]
+                    collection_ids = collection.get("id")
 
-        movie_dict = {
-            "model": "movies.movie",
-            "pk": movie_id,
-            "fields": {
-                "title": movie.get("title"),
-                "poster_path": movie.get("poster_path"),
-                "overview": movie.get("overview"),
-                "genre_ids": movie.get("genre_ids"),
-                "language_ids": language_ids,
-                "productioncountry_ids": countries_ids,
-                "collection_ids": collection_ids,
-            },
-        }
-        movie_results.append(movie_dict)
+            movie_dict = {
+                "model": "movies.movie",
+                "pk": movie_id,
+                "fields": {
+                    "title": movie.get("title"),
+                    "poster_path": movie.get("poster_path"),
+                    "overview": movie.get("overview"),
+                    "genre_ids": movie.get("genre_ids"),
+                    "language_ids": language_ids,
+                    "productioncountry_ids": countries_ids,
+                    "collection_ids": collection_ids,
+                },
+            }
+            movie_results.append(movie_dict)
 
 with open("movies.json", "w", encoding="UTF-8") as file:
     file.write(json.dumps(movie_results, ensure_ascii=False))
