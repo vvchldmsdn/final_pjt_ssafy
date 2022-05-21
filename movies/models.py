@@ -30,6 +30,7 @@ class Movie(models.Model):
     title = models.CharField(max_length=20)
     poster_path = models.TextField()
     overview = models.TextField()
+    tagline = models.TextField()
     genre_ids = models.ManyToManyField(Genre, related_name='movie_genre')
     language_ids = models.ManyToManyField(Spokenlanguage, related_name='movie_spokenlanguage')
     productioncountry_ids = models.ManyToManyField(Productioncountry, related_name='movie_productioncountry')

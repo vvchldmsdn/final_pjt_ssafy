@@ -32,7 +32,9 @@ pposi = {
     '이': 1, '한테': 1, '더러': 1, '으로': 1,
     '가': 1, '의': 1, '와': 1, '과': 1, '다': 1,
     '에서': 1, '하는': 1, '린': 1, '고': 1, '야': 1,
-    '한다': 1
+    '한다': 1, '해서': 1, '하므로': 1, '의': 1,
+    '이라면': 1, ',': 1, ')': 1, ':': 1, '.': 1, '!': 1,
+    '?': 1
 }
 
 
@@ -43,6 +45,10 @@ def sep(s):
             if s_arr[i].endswith(pos):
                 s_arr[i] = s_arr[i][:-len(pos)]
                 break
+        if s_arr[i].startswith('('):
+            s_arr[i] = s_arr[i][1:]
+        if s_arr[i].startswith('\''):
+            s_arr[i] = s_arr[i][1:]
     return s_arr
 
 
@@ -68,7 +74,17 @@ def make_matrix(feats, list_data):
 # 1. feats 만들기
 sep_overviews = []
 for info in movie_serializer.data:
-    sep_overviews.append((info['id'], sep(info['overview'])))
+    actors = info['actor_ids']  # list 형태
+    actor_str = ''
+    for actor in actors:
+        actor_str += actor['name']
+
+    directors = info['director_ids']
+    director_str = ''
+    for director in directors:
+        director_str += director['name']
+    
+    sep_overviews.append((info['id'], sep(info['tagline'] + info['overview'] + info['title'] + actor_str + director_str)))
 
 feats = []
 for id, overview in sep_overviews:

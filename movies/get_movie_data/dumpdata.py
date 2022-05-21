@@ -27,7 +27,7 @@ collections_result = []
 Base_URL = "https://api.themoviedb.org/3"
 path = "/discover/movie"
 params = {
-    "api_key": '#API KEY값 넣어주세용',
+    "api_key": 'd1a4feab78e87ac758f0b64d63f14214',
     "language": "ko-KR",
 }
 
@@ -50,6 +50,7 @@ for page in range(1, 31):
             collection = detail_response.get("belongs_to_collection")  # 딕셔너리 형태
             countries = detail_response.get("production_countries")  # 리스트 형태 / 각 요소는 딕셔너리
             languages = detail_response.get("spoken_languages")  # 리스트 형태 / 각 요소는 딕셔너리
+            tagline = detail_response.get('tagline')
 
             # 내가 정해주는 pk(id)값 담을 배열
             language_ids = []
@@ -123,6 +124,7 @@ for page in range(1, 31):
                     "title": movie.get("title"),
                     "poster_path": movie.get("poster_path"),
                     "overview": movie.get("overview"),
+                    'tagline': tagline,
                     "genre_ids": movie.get("genre_ids"),
                     "language_ids": language_ids,
                     "productioncountry_ids": countries_ids,
