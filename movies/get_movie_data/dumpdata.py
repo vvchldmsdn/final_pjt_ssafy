@@ -5,11 +5,17 @@ from pprint import pprint
 
 spoken_language_dict = dict()
 s_idx = 1
+
 collection_dict = {
     '시리즈 없음': 0
 }
+
 production_countries_dict = dict()
 p_idx = 1
+
+actor_dict = dict()
+
+director_dict = dict()
 
 
 # 영화 정보 받아오기
@@ -21,11 +27,11 @@ collections_result = []
 Base_URL = "https://api.themoviedb.org/3"
 path = "/discover/movie"
 params = {
-    "api_key": "d1a4feab78e87ac758f0b64d63f14214",
+    "api_key": '#API KEY값 넣어주세용',
     "language": "ko-KR",
 }
 
-for page in range(1, 20):
+for page in range(1, 31):
     params_tmp = deepcopy(params)
     params_tmp["page"] = page
 
@@ -73,6 +79,42 @@ for page in range(1, 20):
                 if collection["name"] not in collection_dict:
                     collection_dict[collection["name"]] = collection["id"]
                     collection_ids = collection.get("id")
+            
+            '''
+            ##############밑에 배우, 감독##################
+            '''
+            credits_response = requests.get(
+                Base_URL + f'/movie/{movie_id}/credits', params=params
+            ).json()
+
+            actors = credits_response.get('cast')[:3]  # 배우 3명만 받아오기 / list
+            directors = []
+            for crew in credits_response.get('crew'):
+                if crew.get('known_for_department') == 'Directing':
+                    directors.append(crew)
+
+            actor_ids = []
+            director_ids = []
+
+            # actor id
+            for actor in actors:
+                if actor['name'] not in actor_dict:
+                    actor_dict[actor['name']] = actor['id']
+                    actor_ids.append(actor_dict[actor['name']])
+                else:
+                    actor_ids.append(actor_dict[actor['name']])
+
+            # director id
+            for director in directors:
+                if director['name'] not in director_dict:
+                    director_dict[director['name']] = director['id']
+                    director_ids.append(director_dict[director['name']])
+                else:
+                    director_ids.append(director_dict[director['name']])
+
+            '''
+            ###################여기까지###################
+            '''
 
             movie_dict = {
                 "model": "movies.movie",
@@ -85,6 +127,8 @@ for page in range(1, 20):
                     "language_ids": language_ids,
                     "productioncountry_ids": countries_ids,
                     "collection_ids": collection_ids,
+                    "actor_ids": actor_ids,
+                    "director_ids": director_ids
                 },
             }
             movie_results.append(movie_dict)
@@ -168,6 +212,34 @@ for collection in collection_dict:
 with open("collections.json", "w", encoding="UTF-8") as file:
     file.write(json.dumps(collections_result, ensure_ascii=False))
 
+
+# 6. actor 정보 받기
+actors_result = []
+for actor in actor_dict:
+    a_dict = {
+        'model': 'movies.actor',
+        'pk': actor_dict[actor],
+        'fields': {'name': actor}
+    }
+    actors_result.append(a_dict)
+
+with open('actors.json', 'w', encoding='UTF-8') as file:
+    file.write(json.dumps(actors_result, ensure_ascii=False))
+
+
+# 7. director 정보 받기
+directors_result = []
+for director in director_dict:
+    d_dict = {
+        'model': 'movies.director',
+        'pk': director_dict[director],
+        'fields': {'name': director}
+    }
+    directors_result.append(d_dict)
+
+with open('directors.json', 'w', encoding='UTF-8') as file:
+    file.write(json.dumps(directors_result, ensure_ascii=False))
+
 # pprint(movie_results)
 # print('===============')
 # print('===============')
@@ -179,3 +251,6 @@ with open("collections.json", "w", encoding="UTF-8") as file:
 # print('===============')
 # # pprint(collection_dict)
 # pprint(collections_result)
+
+# pprint(actor_dict)
+
