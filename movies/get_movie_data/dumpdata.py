@@ -31,7 +31,7 @@ params = {
     "language": "ko-KR",
 }
 
-for page in range(1, 31):
+for page in range(41, 61):
     params_tmp = deepcopy(params)
     params_tmp["page"] = page
 
@@ -125,6 +125,8 @@ for page in range(1, 31):
                     "poster_path": movie.get("poster_path"),
                     "overview": movie.get("overview"),
                     'tagline': tagline,
+                    'vote_average': movie.get('vote_average'),
+                    'vote_count': movie.get('vote_count'),
                     "genre_ids": movie.get("genre_ids"),
                     "language_ids": language_ids,
                     "productioncountry_ids": countries_ids,

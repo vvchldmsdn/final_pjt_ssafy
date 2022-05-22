@@ -31,6 +31,8 @@ class Movie(models.Model):
     poster_path = models.TextField()
     overview = models.TextField()
     tagline = models.TextField()
+    vote_average = models.FloatField()
+    vote_count = models.IntegerField()
     genre_ids = models.ManyToManyField(Genre, related_name='movie_genre')
     language_ids = models.ManyToManyField(Spokenlanguage, related_name='movie_spokenlanguage')
     productioncountry_ids = models.ManyToManyField(Productioncountry, related_name='movie_productioncountry')

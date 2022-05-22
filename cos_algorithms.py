@@ -5,7 +5,7 @@ import django
 django.setup()
 
 from movies.models import Movie
-from movies.serializers import MovieCosSerializer
+from movies.serializers.movie_serializers import MovieCosSerializer
 
 from numpy import dot 
 from numpy.linalg import norm 
@@ -18,7 +18,7 @@ movies = Movie.objects.all()
 movie_serializer = MovieCosSerializer(movies, many=True)  # 이걸 입력변수로 받아서 미리 계산 끝낼꺼임
 # pprint(type(movie_serializer.data))
 # pprint(type(movie_serializer.data[0]['overview']))
-movie_data = movie_serializer.data  # 리스트 형태
+movie_data = movie_serializer.data  # 리스트 형태knmb 
 
 '''
 계산 끝내놓고 어디다가 어떻게 쓸지 정해야함
@@ -34,7 +34,7 @@ pposi = {
     '에서': 1, '하는': 1, '린': 1, '고': 1, '야': 1,
     '한다': 1, '해서': 1, '하므로': 1, '의': 1,
     '이라면': 1, ',': 1, ')': 1, ':': 1, '.': 1, '!': 1,
-    '?': 1
+    '?': 1, '\'': 1
 }
 
 
