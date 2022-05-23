@@ -1,4 +1,3 @@
-import cos_algorithms
 from .models import Movie, Genre
 from django.shortcuts import render, get_list_or_404, get_object_or_404
 from .serializers.movie_serializers import MovieSerializer, MovieCosSerializer
@@ -6,7 +5,7 @@ from .serializers.genre_serializers import GenreSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from pprint import pprint
-import wr_algorithms
+from algorithms import cos_algorithms, wr_algorithms
 
 
 # Create your views here.
@@ -40,7 +39,9 @@ def genre_recom(request, genre_pk):
 
 @api_view(['GET'])
 def movie_detail(request, movie_pk):
-    return
+    movie = get_object_or_404(Movie, pk=movie_pk)
+    serializer = MovieSerializer(movie)
+    return Response(serializer.data)
 
 
 @api_view(['GET'])
@@ -51,4 +52,16 @@ def default_recom(request):
         tmp_movie = get_object_or_404(Movie, pk=id)
         tmp_serializer = MovieSerializer(tmp_movie)
         result.append(tmp_serializer.data)
+    return Response(result)
+
+
+@api_view(['GET'])
+def user_interest(request, language_pk):
+    result = []
+    weighted_ratings = wr_algorithms.weighted_ratings
+    for id, rating in weighted_ratings:
+        tmp_movie = get_object_or_404(Movie, pk=id)
+        tmp_serializer = MovieSerializer(tmp_movie)
+        if language_pk in tmp_serializer['language_ids']:
+            result.append(tmp_serializer.data)
     return Response(result)
