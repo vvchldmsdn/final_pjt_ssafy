@@ -32,3 +32,19 @@ class MovieCosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = '__all__'
+
+
+# 장르 별 추천 목록에 쓰기 위함
+class MovieGenreSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Movie
+        fields = ('id', 'poster_path', 'title', 'genre_ids',)
+
+
+# 언어 별 추천 목록에 쓰기 위함
+class MovieLanguageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Movie
+        fields = ('id', 'poster_path', 'title', 'language_ids',)

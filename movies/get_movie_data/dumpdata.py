@@ -31,7 +31,7 @@ params = {
     "language": "ko-KR",
 }
 
-for page in range(41, 61):
+for page in range(1, 31):
     params_tmp = deepcopy(params)
     params_tmp["page"] = page
 

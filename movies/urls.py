@@ -17,8 +17,13 @@ urlpatterns = [
     # DefaultRecom.vue에서 요청 보냄 -> 보낼 데이터 전체 영화중 weighted rating 상위 20개 영화들의 poster_path, id, title
     path('default/', views.default_recom),
 
-    # UserInterest.vue에서 POST 요청 보냄 
+    # UserInterest.vue에서 요청 보냄 
     # 받는 데이터 : spoken_language의 id값
     # 보낼 데이터 : 해당 spoken_language에 대응되는 영화들 weighted rating 해서 상위 20개 영화들의 poster_path, id, title
-    path('interest/<int:language_pk>/', views.user_interests),
+    path('interest/<int:language_pk>/', views.user_interest),
+
+    # movie comment
+    path('<int:movie_pk>/comments/create', views.create_comment),
+
+    path('<int:movie_pk>/comments/<int:comment_pk>', views.comment_update_or_delete),
 ]
